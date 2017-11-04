@@ -1,0 +1,63 @@
+################################################################################
+
+Group info:
+agoel5 Anshuman Goel
+kgondha Kaustubh G Gondhalekar
+ndas Neha Das
+
+################################################################################
+
+Comparing the "real" times of case A and B in order calculate the overhead of one checkpoint.
+
+Case A:
+Execution took 38.212045 seconds
+
+real	0m38.722s
+user	0m38.509s
+sys	0m0.118s
+
+Case B:
+Execution took 39.380908 seconds
+
+real	0m40.029s
+user	0m39.512s
+sys	0m0.262s
+
+The overhead of check-pointing is approximately 1.307 seconds (real time of case B - real time of case A).
+
+Comparing case C time with the "real " time for case A in order to calculate the overhead of one restart.
+
+Case C:
+Execution took 85.655451 seconds
+
+real	0m10.617s
+user	0m8.884s
+sys	0m0.170s
+
+Real time for case C is 10.617 + 30 = 40.617 s
+The overhead of one restart in case C is approximately 1.895 seconds (real time of case C - real time of case A).
+
+Overhead of performing one checkpoint:
+
+The program tells the DMTCP co-ordinator process to execute a checkpoint after 30 seconds of executing the binary.
+Every user-process spawned will have a corresponding checkpoint thread. The co-ordinator sends a message to the checkpoint thread.
+The checkpoint thread then sends a signal which blocks all the user threads it is associated with. The checkpoint
+thread then begins checkpointing by copying all the user memory to a checkpoint image file. After it is done, the user threads continue their work.
+
+Thus, the checkpointing overhead includes memory copy for user processes and overheads required for signalling.
+
+
+What is the overhead of one restart:
+
+The restart overheads include time required for reading the checkpoint image file and creation of an exact memory replica of the process state at that given checkpoint.
+
+
+How to the "real" times for each case compare to the execution time output by the Lake code?
+You should see a very large execution time reported by the Lake code in case C.
+Why? (Hint: how is the execution time calculated in the Lake code? When were the start and end times saved?)
+
+For A and B the real time is very close to the execution time, but for C we see a huge difference between the real time and the execution time. This is because
+in the lake.c code, the execution time is calculated using gettimeofday() function. For case C,
+the start time is already recorded in the checkpoint and the end time is dependent on when the process is restarted.
+
+Thus there is a variable amount of time that could pass between the execution of C and its checkpoint.
