@@ -7,6 +7,14 @@ ndas Neha Das
 
 ################################################################################
 
+Problem Objective:
+Assess the Lake application in terms of its checkpointing overhead under DMTCP.
+
+Commands to install:
+Please refer to homework description.
+
+Results/Discussion:
+
 Comparing the "real" times of case A and B in order calculate the overhead of one checkpoint.
 
 Case A:
